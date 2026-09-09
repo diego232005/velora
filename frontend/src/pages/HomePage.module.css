@@ -1,0 +1,26 @@
+.block {
+  margin-top: var(--space-8);
+}
+
+.mobileSports {
+  display: none;
+  margin-top: var(--space-5);
+}
+
+.liveRail {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  scroll-snap-type: x mandatory;
+}
+
+.liveRail > * {
+  scroll-snap-align: start;
+}
+
+@media (max-width: 64rem) {
+  .mobileSports {
+    display: block;
+  }
+}

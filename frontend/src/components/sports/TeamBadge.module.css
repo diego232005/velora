@@ -1,0 +1,23 @@
+.badge {
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--team-color) 22%, var(--color-bg-elevated));
+  color: var(--color-text-primary);
+  border: 1px solid color-mix(in srgb, var(--team-color) 55%, transparent);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.md {
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 0.65rem;
+}
+
+.sm {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 0.58rem;
+}

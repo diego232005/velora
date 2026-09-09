@@ -1,0 +1,21 @@
+{
+  "name": "velora-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "API Node.js de Velora para login contra MySQL.",
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "seed:users": "node src/seedUsers.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0"
+  }
+}

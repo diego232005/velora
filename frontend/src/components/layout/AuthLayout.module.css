@@ -1,0 +1,128 @@
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  background: var(--color-bg-primary);
+}
+
+.visual {
+  position: relative;
+  overflow: hidden;
+  background: var(--gradient-auth);
+  padding: var(--space-10);
+  display: flex;
+  align-items: flex-end;
+}
+
+.orb,
+.orbAlt {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(8px);
+}
+
+.orb {
+  width: 22rem;
+  height: 22rem;
+  top: -4rem;
+  right: -3rem;
+  background: radial-gradient(circle, rgba(184, 245, 61, 0.22), transparent 68%);
+}
+
+.orbAlt {
+  width: 16rem;
+  height: 16rem;
+  bottom: 12%;
+  left: -3rem;
+  background: radial-gradient(circle, rgba(255, 138, 61, 0.18), transparent 70%);
+}
+
+.visualContent {
+  position: relative;
+  z-index: 1;
+  max-width: 28rem;
+}
+
+.slogan {
+  margin-top: var(--space-8);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.03em;
+  line-height: var(--lh-tight);
+}
+
+.tagline {
+  margin: var(--space-4) 0 var(--space-6);
+  color: var(--color-text-secondary);
+}
+
+.visualContent ul {
+  display: grid;
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
+}
+
+.visualContent li {
+  padding-left: var(--space-4);
+  position: relative;
+}
+
+.visualContent li::before {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+}
+
+.panel {
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.card {
+  width: min(28rem, 100%);
+  display: grid;
+  gap: var(--space-5);
+}
+
+.wide {
+  width: min(34rem, 100%);
+}
+
+.card h1 {
+  font-size: var(--fs-2xl);
+  letter-spacing: -0.03em;
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  margin-top: calc(var(--space-2) * -1);
+}
+
+.mobileBrand {
+  display: none;
+}
+
+@media (max-width: 64rem) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .visual {
+    display: none;
+  }
+
+  .mobileBrand {
+    display: block;
+  }
+
+  .panel {
+    padding: var(--space-5) var(--space-4);
+    align-items: start;
+  }
+}

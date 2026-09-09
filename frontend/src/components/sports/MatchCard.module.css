@@ -1,0 +1,84 @@
+.card {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+}
+
+.meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.fav {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+}
+
+.fav:hover,
+.on {
+  color: var(--color-warning);
+}
+
+.teams {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.teams div {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: var(--fw-medium);
+}
+
+.market small {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+}
+
+.odds {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.extra {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+}
+
+@media (max-width: 64rem) {
+  .card {
+    grid-template-columns: 1fr;
+  }
+
+  .odds {
+    overflow-x: auto;
+  }
+}

@@ -1,0 +1,8 @@
+.section {
+  margin-top: var(--space-8);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+}
