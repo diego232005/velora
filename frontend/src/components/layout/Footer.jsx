@@ -35,6 +35,9 @@ export function Footer() {
               <Link to="/">{brand.name}</Link>
             </li>
             <li>
+              <Link to="/carga-masiva">Carga masiva</Link>
+            </li>
+            <li>
               <button type="button" onClick={() => setLegalDialog('terms')}>
                 Términos y condiciones
               </button>

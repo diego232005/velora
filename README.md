@@ -1,56 +1,57 @@
 # Velora
 
-Casa de apuestas de demostración, limitada a la **Liga BetPlay DIMAYOR**. El proyecto está separado en frontend (React) y backend (Node.js + MySQL).
+Casa de apuestas de **demostración universitaria**, limitada al **fútbol colombiano (Liga BetPlay DIMAYOR)**. No procesa dinero real.
 
-Velora no es un operador real. No procesa depósitos, retiros ni apuestas reales.
+## Stack
 
-## Estructura
+| Capa | Tecnología |
+|------|------------|
+| Frontend | React 18 + Vite 6 |
+| Backend | Node.js + Express |
+| Datos | MySQL + PostgreSQL + SQL Server + MongoDB + Firebase |
+| Docs API | Swagger UI `/api/docs` |
+| Tiempo real | WebSockets `/ws` |
 
-```text
-bd/
-├── frontend/     React + Vite
-├── backend/      Node.js + Express + MySQL
-└── database/     Script SQL para DBeaver
-```
+Detalle de auditoría: [`docs/AUDITORIA_INICIAL.md`](docs/AUDITORIA_INICIAL.md).
 
 ## Requisitos
 
-- Node.js 18.18 o superior (recomendado: 20 LTS)
-- MySQL o MariaDB en el puerto `3306`
-- Usuario `root`, contraseña `0000`
-- Base de datos `velora_betplay`
-- DBeaver, si vas a revisar las tablas
+- Node.js 18.18+ (recomendado 20 LTS)
+- npm
+- Motores de BD (vía Docker Compose **o** instalación local)
+- Docker Desktop (recomendado) — ver [`docs/DOCKER.md`](docs/DOCKER.md)
 
-## 1. Crear la base de datos
+## Arranque con túnel público (Tunnelmole)
 
-En DBeaver, ejecuta el script completo:
+```bash
+npm install          # una vez, en la raíz del repo
+npm run dev:public   # backend + frontend + tmole
+```
 
-`database/velora_betplay.sql`
+URLs fijas: configura `TMOLE_API_DOMAIN` / `TMOLE_WEB_DOMAIN` en `.env` (raíz). Ver [`docs/TUNNELMOLE.md`](docs/TUNNELMOLE.md).
 
-## 2. Encender el backend
+## Arranque rápido (sin Docker)
+
+### 1. MySQL
+
+Ejecuta `database/mysql/init.sql` en DBeaver/MySQL.
+
+### 2. Backend
 
 ```bash
 cd backend
+copy .env.example .env   # Windows
 npm install
 npm run seed:users
 npm run dev
 ```
 
-La API queda en `http://localhost:4000`.
+API: `http://localhost:4000`  
+Swagger: `http://localhost:4000/api/docs`  
+WS: `ws://localhost:4000/ws`  
+Health multi-BD: `http://localhost:4000/api/health?all=1`
 
-El archivo `backend/.env` ya tiene:
-
-```env
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=0000
-DB_NAME=velora_betplay
-```
-
-## 3. Encender el frontend
-
-En otra terminal:
+### 3. Frontend
 
 ```bash
 cd frontend
@@ -58,35 +59,58 @@ npm install
 npm run dev
 ```
 
-La interfaz queda en `http://localhost:5173`.
+UI: `http://localhost:5173`
 
-## Login
+### 4. Resto de bases
 
-El login, el registro y la recuperación hablan con MySQL a través de Node. No hay tokens: la sesión se guarda en el navegador.
+Levanta PostgreSQL, SQL Server, MongoDB (y opcionalmente emulador Firebase). Copia variables de `.env.example`.  
+Schemas: `database/postgres/init.sql`, `database/mssql/init.sql`, `database/mongo/init.js`.
 
-- Registro: inserta `usuario`, `perfil_cliente` y `cuenta` (saldo 0 COP).
-- Recuperación: no envía correo. Pide el documento de la cuenta y actualiza `hash_contrasena`.
+Con Docker:
 
-Cuentas de prueba:
+```bash
+docker compose up -d --build
+```
+
+## Login demo
+
+Según el seed del archivo SQL del repo:
 
 | Correo | Contraseña |
-| --- | --- |
+|--------|------------|
 | laura.gomez@correo.com | clave_demo_123 |
 | andres.perez@correo.com | clave_demo_123 |
-| sofia.ramos@correo.com | clave_demo_123 |
-| valentina.diaz@correo.com | clave_demo_123 (suspendida) |
 
-## Rutas del frontend
+Si tu MySQL local ya estaba cargado con un seed anterior, pueden existir variantes como `laura@correo.com` / `clave_123`. Comprueba con `SELECT correo FROM usuario`.
 
-- `/` página principal
-- `/login` inicio de sesión
-- `/forgot-password` recuperación visual
-- `/register` registro visual
+## Rutas UI
 
-## Dónde están los usuarios
+- `/` partidos desde API (BetPlay)
+- `/login` `/register` `/forgot-password`
+- `/billetera` saldo, depósitos sim/Wompi, historial
+- `/carga-masiva` Excel clientes
 
-Los mismos datos que antes estaban en `users.js` viven ahora en:
+## Documentación
 
-- `database/velora_betplay.sql` — carga inicial
-- `backend/src/data/users.js` — semilla del backend
-- tablas `usuario`, `perfil_cliente` y `cuenta` en MySQL
+| Documento | Tema |
+|-----------|------|
+| [`docs/AUDITORIA_INICIAL.md`](docs/AUDITORIA_INICIAL.md) | Auditoría |
+| [`docs/ARQUITECTURA_DATOS.md`](docs/ARQUITECTURA_DATOS.md) | 5 bases |
+| [`docs/ARQUITECTURA_SISTEMA.md`](docs/ARQUITECTURA_SISTEMA.md) | Sistema |
+| [`docs/IMPORTACION_DATOS_DEPORTIVOS.md`](docs/IMPORTACION_DATOS_DEPORTIVOS.md) | Datos deportivos |
+| [`docs/MODELO_DE_NEGOCIO.md`](docs/MODELO_DE_NEGOCIO.md) | Apuestas |
+| [`docs/PAGOS_WOMPI.md`](docs/PAGOS_WOMPI.md) | Wompi |
+| [`docs/WEBSOCKETS.md`](docs/WEBSOCKETS.md) | WS |
+| [`docs/AUTENTICACION.md`](docs/AUTENTICACION.md) | Auth / OAuth |
+| [`docs/GOOGLE_DRIVE.md`](docs/GOOGLE_DRIVE.md) | Drive |
+| [`docs/DOCKER.md`](docs/DOCKER.md) | Docker |
+| [`docs/DESPLIEGUE_CLOUDFLARE.md`](docs/DESPLIEGUE_CLOUDFLARE.md) | Cloudflare |
+| [`docs/SEGURIDAD.md`](docs/SEGURIDAD.md) | Seguridad |
+| [`docs/PRUEBAS.md`](docs/PRUEBAS.md) | Pruebas |
+
+## Pruebas
+
+```bash
+cd backend
+npm test
+```

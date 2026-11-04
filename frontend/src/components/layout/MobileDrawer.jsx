@@ -1,7 +1,7 @@
 import { X } from 'lucide-react';
 import { useUi } from '../../context/UiContext';
 import { Logo } from '../common/Logo';
-import { SportsNavigation } from '../sports/SportsNavigation';
+import { SportsSidebar } from '../sports/SportsSidebar';
 import styles from './MobileDrawer.module.css';
 
 export function MobileDrawer() {
@@ -17,7 +17,7 @@ export function MobileDrawer() {
     >
       <aside
         className={styles.drawer}
-        aria-label="Menú de deportes"
+        aria-label="Menú de apuestas"
         onClick={(event) => event.stopPropagation()}
       >
         <div className={styles.top}>
@@ -31,10 +31,7 @@ export function MobileDrawer() {
             <X size={18} />
           </button>
         </div>
-        <SportsNavigation
-          orientation="vertical"
-          onSelect={() => setMobileMenuOpen(false)}
-        />
+        <SportsSidebar onNavigate={() => setMobileMenuOpen(false)} />
       </aside>
     </div>
   );

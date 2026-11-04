@@ -15,7 +15,7 @@ export function LeagueHighlights() {
           style={{ '--league-accent': league.accent }}
           onClick={() => setActiveSport(league.sportId)}
         >
-          <span>{league.eventCount} eventos</span>
+          <span>{league.eventCount == null ? 'Datos API' : `${league.eventCount} eventos`}</span>
           <strong>{league.name}</strong>
         </button>
       ))}

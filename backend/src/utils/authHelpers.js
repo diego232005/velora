@@ -30,12 +30,19 @@ export async function nextId(connection, table, column) {
 }
 
 export function toPublicUser(row) {
+  const roleId = Number(row.roleId) || 3;
   return {
     id: row.id,
     email: row.email,
     firstName: row.firstName,
     lastName: row.lastName,
+    phone: row.phone || null,
+    documentNumber: row.documentNumber || null,
     balance: row.balance === null || row.balance === undefined ? 0 : Number(row.balance),
     currency: row.currency || 'COP',
+    roleId,
+    isAdmin: roleId === 1,
+    roleLabel: roleId === 1 ? 'admin' : roleId === 2 ? 'operador' : 'cliente',
+    avatarUrl: row.avatarUrl || row.foto_url || null,
   };
 }

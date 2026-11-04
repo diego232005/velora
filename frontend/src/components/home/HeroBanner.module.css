@@ -24,6 +24,14 @@
   background: linear-gradient(128deg, #120e0a 0%, #2a1a0e 50%, #101820 100%);
 }
 
+html[data-theme='light'] .live {
+  background: linear-gradient(128deg, #ffe8ec 0%, #ffd6de 48%, #fff1e8 100%);
+}
+
+html[data-theme='light'] .secondary {
+  background: linear-gradient(128deg, #fff4e8 0%, #ffe0c4 50%, #e8f4fa 100%);
+}
+
 .shapes {
   position: absolute;
   inset: 0;

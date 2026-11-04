@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { pool } from '../db.js';
+import { createSessionToken, requireAuth } from '../middleware/auth.js';
+import { writeDomainEvent } from '../db/mongo.js';
 import {
   getAgeFromDate,
   isValidEmail,
@@ -10,6 +12,21 @@ import {
 
 export const authRouter = Router();
 const MIN_AGE = 18;
+
+authRouter.get('/me', requireAuth, async (request, response) => {
+  try {
+    const found = await findUserById(request.userId);
+    if (!found) {
+      return response.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    }
+    return response.json({ ok: true, user: toPublicUser(found) });
+  } catch (error) {
+    return response.status(500).json({
+      ok: false,
+      error: error.message || 'No se pudo cargar el perfil.',
+    });
+  }
+});
 
 authRouter.post('/login', async (request, response) => {
   const identifier = String(request.body?.identifier || '').trim().toLowerCase();
@@ -44,8 +61,26 @@ authRouter.post('/login', async (request, response) => {
       [found.id],
     );
 
+    const token = createSessionToken(found.id, {
+      email: found.email,
+      passwordHash: found.password,
+      roleId: Number(found.roleId) || 3,
+    });
+    try {
+      await writeDomainEvent({
+        type: 'auth.login',
+        aggregate: 'usuario',
+        aggregateId: found.id,
+        actorId: found.id,
+        payload: { email: found.email },
+      });
+    } catch {
+      /* Mongo opcional en login */
+    }
+
     return response.json({
       ok: true,
+      token,
       user: toPublicUser(found),
     });
   } catch (error) {
@@ -189,8 +224,14 @@ authRouter.post('/register', async (request, response) => {
 
     await connection.commit();
 
+    const token = createSessionToken(userId, {
+      email,
+      passwordHash: password,
+      roleId: 3,
+    });
     return response.status(201).json({
       ok: true,
+      token,
       user: toPublicUser({
         id: userId,
         email,
@@ -308,14 +349,56 @@ authRouter.post('/reset-password', async (request, response) => {
   }
 });
 
-async function findUserByIdentifier(identifier) {
+async function ensureFotoColumn() {
+  try {
+    await pool.execute(
+      `ALTER TABLE perfil_cliente ADD COLUMN foto_url VARCHAR(500) NULL`,
+    );
+  } catch {
+    /* ya existe */
+  }
+}
+
+async function findUserById(userId) {
+  await ensureFotoColumn();
   const [rows] = await pool.execute(
     `SELECT
         u.id_usuario AS id,
         u.correo AS email,
         u.hash_contrasena AS password,
+        u.id_rol AS roleId,
         p.nombres AS firstName,
         p.apellidos AS lastName,
+        p.foto_url AS avatarUrl,
+        p.telefono AS phone,
+        p.numero_documento AS documentNumber,
+        e.nombre AS status,
+        c.saldo AS balance,
+        c.moneda AS currency
+     FROM usuario u
+     INNER JOIN perfil_cliente p ON p.id_usuario = u.id_usuario
+     INNER JOIN estado_usuario e ON e.id_estado_usuario = u.id_estado_usuario
+     LEFT JOIN cuenta c ON c.id_usuario = u.id_usuario
+     WHERE u.id_usuario = ?
+     LIMIT 1`,
+    [userId],
+  );
+  return rows[0] || null;
+}
+
+async function findUserByIdentifier(identifier) {
+  await ensureFotoColumn();
+  const [rows] = await pool.execute(
+    `SELECT
+        u.id_usuario AS id,
+        u.correo AS email,
+        u.hash_contrasena AS password,
+        u.id_rol AS roleId,
+        p.nombres AS firstName,
+        p.apellidos AS lastName,
+        p.foto_url AS avatarUrl,
+        p.telefono AS phone,
+        p.numero_documento AS documentNumber,
         e.nombre AS status,
         c.saldo AS balance,
         c.moneda AS currency

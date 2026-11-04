@@ -1,4 +1,4 @@
-import { Home, LogOut, Radio, Ticket, UserPlus } from 'lucide-react';
+import { Home, Radio, Ticket, UserPlus } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useBetSlip } from '../../context/BetSlipContext';
@@ -7,7 +7,7 @@ import styles from './MobileNavigation.module.css';
 
 export function MobileNavigation() {
   const { copy } = useUi();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { selections, setOpen } = useBetSlip();
 
   return (
@@ -36,10 +36,10 @@ export function MobileNavigation() {
         <span>{copy.betSlip}</span>
       </button>
       {isAuthenticated ? (
-        <button type="button" className={styles.item} onClick={logout}>
-          <LogOut size={20} />
-          <span>{copy.logout}</span>
-        </button>
+        <NavLink to="/mis-apuestas" className={styles.item}>
+          <Ticket size={20} />
+          <span>{copy.myBets || 'Mis apuestas'}</span>
+        </NavLink>
       ) : (
         <NavLink to="/register" className={styles.item}>
           <UserPlus size={20} />

@@ -8,3 +8,12 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+!.env.docker
+!.env.prod.example
+!.env.production.example
+!**/.env.production.example
+secrets/
+**/firebase-adminsdk*.json
+**/serviceAccount*.json
+backend/uploads/
+.public-urls.txt

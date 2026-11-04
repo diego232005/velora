@@ -1,21 +1,32 @@
 {
   "name": "velora-backend",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "API Node.js de Velora para login contra MySQL.",
+  "description": "API Node.js de Velora — multi-BD, apuestas, Swagger y WebSockets.",
   "engines": {
     "node": ">=18.18.0"
   },
   "scripts": {
-    "dev": "node --watch src/server.js",
+    "dev": "node --watch-path=./src src/server.js",
     "start": "node src/server.js",
-    "seed:users": "node src/seedUsers.js"
+    "seed:users": "node src/seedUsers.js",
+    "seed:betting": "node src/scripts/seedBettingCard.js",
+    "sync:sports": "node src/scripts/syncSportsCli.js",
+    "test": "node --test tests/**/*.test.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mysql2": "^3.12.0"
+    "firebase-admin": "^13.0.2",
+    "mongodb": "^6.12.0",
+    "mssql": "^11.0.1",
+    "multer": "^2.4.0",
+    "mysql2": "^3.12.0",
+    "pg": "^8.13.1",
+    "swagger-ui-express": "^5.0.1",
+    "ws": "^8.18.0",
+    "xlsx": "^0.18.5"
   }
 }

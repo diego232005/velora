@@ -1,13 +1,17 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import { multiplyOdds } from '../utils/format';
+import { apiRequest } from '../api/client';
+import { useAuth } from './AuthContext';
+import { multiplyOdds } from '../utils/odds';
 
 const BetSlipContext = createContext(null);
 
 export function BetSlipProvider({ children }) {
+  const { token, isAuthenticated, user, refreshBalance } = useAuth();
   const [selections, setSelections] = useState([]);
-  const [stake, setStake] = useState('10');
+  const [stake, setStake] = useState('10000');
   const [open, setOpen] = useState(false);
-  const [demoMessage, setDemoMessage] = useState('');
+  const [message, setMessage] = useState('');
+  const [placing, setPlacing] = useState(false);
 
   const addSelection = (selection) => {
     setSelections((current) => {
@@ -15,13 +19,20 @@ export function BetSlipProvider({ children }) {
       if (exists) {
         return current.filter((item) => item.oddId !== selection.oddId);
       }
+      const conflict = current.some((item) => item.eventId === selection.eventId);
+      if (conflict) {
+        setMessage(
+          'Solo una selección por partido en el combinado; se reemplazó la anterior.',
+        );
+      } else {
+        setMessage('');
+      }
       const withoutSameEvent = current.filter(
         (item) => item.eventId !== selection.eventId,
       );
       return [...withoutSameEvent, selection];
     });
     setOpen(true);
-    setDemoMessage('');
   };
 
   const removeSelection = (oddId) => {
@@ -30,22 +41,50 @@ export function BetSlipProvider({ children }) {
 
   const clearSelections = () => {
     setSelections([]);
-    setDemoMessage('');
+    setMessage('');
   };
 
-  const placeDemoBet = () => {
+  const placeBet = async () => {
     if (!selections.length) {
-      setDemoMessage('Añade al menos una selección para continuar.');
+      setMessage('Añade al menos una selección para continuar.');
       return;
     }
     const amount = Number(stake);
     if (!amount || amount <= 0) {
-      setDemoMessage('Introduce un importe válido para esta demostración.');
+      setMessage('Introduce un importe válido.');
       return;
     }
-    setDemoMessage(
-      'Esta es una demostración visual. No se ha procesado ninguna apuesta real.',
+    if (!isAuthenticated || !token) {
+      setMessage('Inicia sesión para confirmar la apuesta en el servidor.');
+      return;
+    }
+
+    setPlacing(true);
+    const idempotencyKey = `web-${user.id}-${Date.now()}-${selections.map((s) => s.oddId).join('-')}`;
+    const result = await apiRequest('/api/bets/place', {
+      method: 'POST',
+      token,
+      headers: { 'Idempotency-Key': idempotencyKey },
+      body: JSON.stringify({
+        selectionIds: selections.map((s) => Number(s.oddId)),
+        stake: amount,
+        idempotencyKey,
+      }),
+    });
+    setPlacing(false);
+
+    if (!result.ok) {
+      setMessage(result.data.error || 'El servidor rechazó la apuesta.');
+      return;
+    }
+
+    setMessage(
+      result.data.duplicate
+        ? `Apuesta ya registrada (idempotencia). Cupón #${result.data.bet.id_cupon}`
+        : `Apuesta confirmada. Cupón #${result.data.bet.id_cupon}`,
     );
+    setSelections([]);
+    await refreshBalance();
   };
 
   const totalOdd = useMemo(
@@ -66,16 +105,18 @@ export function BetSlipProvider({ children }) {
       setStake,
       open,
       setOpen,
-      demoMessage,
+      message,
+      setMessage,
+      placing,
       addSelection,
       removeSelection,
       clearSelections,
-      placeDemoBet,
+      placeBet,
       totalOdd,
       potentialWin,
       isSelected: (oddId) => selections.some((item) => item.oddId === oddId),
     }),
-    [selections, stake, open, demoMessage, totalOdd, potentialWin],
+    [selections, stake, open, message, placing, totalOdd, potentialWin, token, isAuthenticated],
   );
 
   return (

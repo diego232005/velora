@@ -3,10 +3,11 @@
   left: var(--space-4);
   top: -3rem;
   z-index: calc(var(--z-modal) + 1);
-  background: var(--color-primary);
+  background: var(--gradient-primary);
   color: var(--color-text-on-primary);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-sm);
+  font-weight: var(--fw-bold);
 }
 
 .skip:focus {
@@ -15,18 +16,31 @@
 
 .shell {
   min-height: 100vh;
-  background: var(--color-bg-primary);
+  background: transparent;
 }
 
 .body {
   display: grid;
   grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--betslip-width);
   align-items: start;
+  gap: 0;
 }
 
 .main {
   min-width: 0;
   padding: var(--space-6);
+  animation: rise 0.45s var(--transition-base) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (max-width: 80rem) {
@@ -43,5 +57,11 @@
   .main {
     padding: var(--space-4);
     padding-bottom: calc(var(--mobile-nav-height) + 5.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main {
+    animation: none;
   }
 }

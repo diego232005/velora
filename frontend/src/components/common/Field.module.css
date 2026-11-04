@@ -23,7 +23,7 @@
   border: 1px solid var(--color-border);
   background: var(--color-bg-input);
   color: var(--color-text-primary);
-  color-scheme: dark;
+  color-scheme: light dark;
   transition:
     border-color var(--transition-fast),
     box-shadow var(--transition-fast),

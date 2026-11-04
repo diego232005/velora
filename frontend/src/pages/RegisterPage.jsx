@@ -31,6 +31,7 @@ const initialForm = {
   birthDate: '',
   password: '',
   confirmPassword: '',
+  photo: null,
   terms: false,
   ofAge: false,
   marketing: false,
@@ -38,7 +39,7 @@ const initialForm = {
 
 export function RegisterPage() {
   const { setLegalDialog } = useUi();
-  const { isAuthenticated, register } = useAuth();
+  const { isAuthenticated, register, patchUser } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
@@ -136,6 +137,24 @@ export function RegisterPage() {
       return;
     }
 
+    if (form.photo && result.token) {
+      const body = new FormData();
+      body.append('photo', form.photo);
+      const up = await apiRequest('/api/drive/profile-photo', {
+        method: 'POST',
+        token: result.token,
+        body,
+      });
+      if (up.ok && up.data.avatarUrl) {
+        patchUser({ avatarUrl: up.data.avatarUrl });
+      } else if (!up.ok) {
+        setMessage(
+          up.data.error ||
+            'Cuenta creada, pero la foto no se subió a Drive (comparte Perfil con el service account como Editor).',
+        );
+      }
+    }
+
     navigate('/', { replace: true });
   };
 
@@ -176,6 +195,23 @@ export function RegisterPage() {
           required
           error={errors.email}
         />
+        <div className={fieldStyles.field}>
+          <label className={fieldStyles.label} htmlFor="photo">
+            Foto de perfil (Drive / Perfil)
+          </label>
+          <input
+            id="photo"
+            type="file"
+            accept="image/*"
+            className={fieldStyles.control}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                photo: event.target.files?.[0] || null,
+              }))
+            }
+          />
+        </div>
         <TextInput
           id="phone"
           label="Número de teléfono"

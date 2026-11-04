@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
 import { Ticket, Trash2, X } from 'lucide-react';
 import { useBetSlip } from '../../context/BetSlipContext';
+import { useAuth } from '../../context/AuthContext';
 import { formatMoney, formatOdd } from '../../utils/format';
 import { EmptyState } from '../common/EmptyState';
 import { FormMessage } from '../common/FormMessage';
@@ -7,16 +9,17 @@ import { PrimaryButton } from '../common/PrimaryButton';
 import styles from './BetSlip.module.css';
 
 export function BetSlip() {
+  const { isAuthenticated } = useAuth();
   const {
     selections,
     stake,
     setStake,
     open,
     setOpen,
-    demoMessage,
+    message,
     removeSelection,
     clearSelections,
-    placeDemoBet,
+    placeBet,
     totalOdd,
     potentialWin,
   } = useBetSlip();
@@ -60,7 +63,9 @@ export function BetSlip() {
               <li key={item.oddId} className={styles.item}>
                 <div>
                   <small>{item.leagueName}</small>
-                  <p>{item.label}</p>
+                  <p>
+                    {item.label} · {item.pick}
+                  </p>
                   <span>
                     {item.market} · {item.pick}
                   </span>
@@ -100,10 +105,19 @@ export function BetSlip() {
             <span>Ganancia potencial</span>
             <strong>{formatMoney(potentialWin)}</strong>
           </div>
-          <PrimaryButton fullWidth onClick={placeDemoBet}>
+          <PrimaryButton fullWidth onClick={placeBet}>
             Apostar ahora
           </PrimaryButton>
-          <FormMessage tone="info">{demoMessage}</FormMessage>
+          <FormMessage tone="info">{message}</FormMessage>
+          {isAuthenticated && (
+            <Link
+              to="/mis-apuestas"
+              className={styles.historyLink}
+              onClick={() => setOpen(false)}
+            >
+              Ver mis apuestas
+            </Link>
+          )}
         </div>
       </aside>
 

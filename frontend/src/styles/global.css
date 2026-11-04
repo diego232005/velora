@@ -31,6 +31,10 @@ html {
   }
 }
 
+html[data-theme='light'] body {
+  color-scheme: light;
+}
+
 body {
   margin: 0;
   color-scheme: dark;
@@ -38,9 +42,18 @@ body {
   font-size: var(--fs-md);
   line-height: var(--lh-body);
   color: var(--color-text-primary);
-  background: var(--color-bg-primary);
+  background: var(--gradient-mesh);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  letter-spacing: 0.01em;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
 }
 
 #root {

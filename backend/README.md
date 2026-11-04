@@ -14,7 +14,7 @@ Esos valores están en `backend/.env`.
 
 ## 1. Crear la base en DBeaver
 
-Ejecuta `database/velora_betplay.sql`. Eso crea las 42 tablas y los usuarios de demostración.
+Ejecuta `database/mysql/init.sql`. Eso crea las 42 tablas y los usuarios de demostración.
 
 ## 2. Instalar y encender
 
@@ -38,6 +38,9 @@ La API queda en `http://localhost:4000`.
 - `POST /api/auth/register` — crea usuario, perfil y cuenta
 - `POST /api/auth/recover` — comprueba si el correo existe
 - `POST /api/auth/reset-password` — cambia la clave con correo + documento
+- `GET /api/bulk/clients/template` — plantilla Excel vacía
+- `GET /api/bulk/clients/sample` — Excel con 20 clientes aleatorios
+- `POST /api/bulk/clients` — importa el Excel a MySQL
 
 Ejemplo:
 

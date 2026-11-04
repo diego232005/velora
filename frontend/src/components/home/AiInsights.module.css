@@ -1,0 +1,106 @@
+.panel {
+  margin-top: var(--space-8);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 40%,
+    rgba(62, 240, 255, 0.06),
+    transparent 70%
+  );
+  pointer-events: none;
+  animation: sweep 8s linear infinite;
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-30%);
+  }
+  to {
+    transform: translateX(30%);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  position: relative;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-neon);
+}
+
+.header h2 {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+
+.badge {
+  margin-left: auto;
+  font-size: var(--fs-xs);
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 138, 61, 0.45);
+  color: var(--color-secondary);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+  position: relative;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-inset);
+  border: 1px solid var(--color-border);
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.card:hover {
+  border-color: var(--color-border-strong);
+  transform: translateY(-2px);
+}
+
+.card p {
+  margin: 0.25rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.card em {
+  font-style: normal;
+  font-size: var(--fs-xs);
+  color: var(--color-neon);
+  font-family: var(--font-display);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel::before {
+    animation: none;
+  }
+}

@@ -1,3 +1,4 @@
+/** @deprecated Home ya no usa este archivo. Datos ficticios fuera de alcance; conservado solo por referencia histórica. */
 export const liveEvents = [
   {
     id: 'live-1',

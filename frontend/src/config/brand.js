@@ -5,12 +5,12 @@ export const brand = {
   tagline: 'Precisión, velocidad y emoción en cada mercado.',
   domain: 'velora.example',
   supportEmail: 'soporte@velora.example',
-  currency: 'USD',
+  currency: 'COP',
   currencySymbol: '$',
-  locale: 'es',
+  locale: 'es-CO',
   defaultLanguage: 'es',
   minAge: 18,
-  demoBalance: 1250.0,
+  demoBalance: 0,
   legalEntity: 'Velora Demo Ltd.',
 };
 

@@ -1,14 +1,18 @@
 import { brand } from '../config/brand';
+export { multiplyOdds } from './odds';
 
 export function formatOdd(value) {
-  return Number(value).toFixed(2);
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '—';
+  return n.toFixed(2);
 }
 
 export function formatMoney(value, locale = brand.locale, currency = brand.currency) {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-    minimumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(Number(value) || 0);
 }
 
@@ -31,8 +35,4 @@ export function formatClock(iso, locale = brand.locale) {
     hour: '2-digit',
     minute: '2-digit',
   }).format(date);
-}
-
-export function multiplyOdds(odds) {
-  return odds.reduce((total, odd) => total * Number(odd || 1), 1);
 }
